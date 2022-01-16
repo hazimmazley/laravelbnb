@@ -3,12 +3,12 @@
       <div v-if="loading">Data is loading ...</div>
       <div v-else>
           <div class="row mb-4" v-for="row in rows" :key="'row' + row">
-              <div class="col" v-for="(bookable, column) in bookablesInRow(row)"
+              <div class="col d-flex align-items-stretch" v-for="(bookable, column) in bookablesInRow(row)"
               :key="'row' + row + column"
               >
                 <bookable-list-item 
                     :title="bookable.title" 
-                    :content="bookable.content" 
+                    :description="bookable.description" 
                     :price="1000">
                 </bookable-list-item>
               </div>
@@ -53,46 +53,12 @@ export default {
 
     created() {
         this.loading = true,
-        setTimeout(() => {
-            this.bookables = [
-                {
-                    id:1,
-                    title: "Villa 1",
-                    content: "Villa 1"
-                },
-                {
-                    id:2,
-                    title: "Villa 2",
-                    content: "Villa 2"
-                },
-                {
-                    id:3,
-                    title: "Villa 2",
-                    content: "Villa 2"
-                },
-                {
-                    id:4,
-                    title: "Villa 2",
-                    content: "Villa 2"
-                },
-                 {
-                    id:5,
-                    title: "Villa 2",
-                    content: "Villa 2"
-                },
-                 {
-                    id:6,
-                    title: "Villa 2",
-                    content: "Villa 2"
-                },
-                 {
-                    id:7,
-                    title: "Villa 2",
-                    content: "Villa 2"
-                },
-            ];
-            this.loading= false
-        }, 2000)
+
+        axios.get('/api/bookables')
+        .then(response => {
+            this.bookables = response.data
+            this.loading =false
+        })
     }
 }
 </script>
