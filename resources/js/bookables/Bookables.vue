@@ -7,9 +7,7 @@
               :key="'row' + row + column"
               >
                 <bookable-list-item 
-                    :title="bookable.title" 
-                    :description="bookable.description" 
-                    :price="1000">
+                    v-bind="bookable">
                 </bookable-list-item>
               </div>
 
@@ -56,7 +54,7 @@ export default {
 
         axios.get('/api/bookables')
         .then(response => {
-            this.bookables = response.data
+            this.bookables = response.data.data
             this.loading =false
         })
     }
