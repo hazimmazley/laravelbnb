@@ -2,7 +2,9 @@
   <div>
       <div class="form-group">
           <label for="" class="text-muted">Select the star rating (1 is worst - 5 is best)</label>
-          <star-rating :rating="5" class="fa-3x" v-on:rating:changed="onRatingChanged"></star-rating>
+          <star-rating class="fa-3x"
+           v-model="review.rating"
+           ></star-rating>
       </div>
       <div class="form-group">
           <label for="content" class="text-muted">Describe your experience with</label>
@@ -22,14 +24,7 @@ export default {
                 content: null
             }
         }
-    },
-    
-    methods: {
-        onRatingChanged(rating) {
-            console.log(rating);
-        }
     }
-
 }
 </script>
 
