@@ -54,8 +54,8 @@ export default {
     data() {
         return {
             loading: false,
-            from: null,
-            to:null,
+            from: this.$store.state.lastSearch.from,
+            to: this.$store.state.lastSearch.to,
             status: null,
         }
     },
@@ -78,6 +78,11 @@ export default {
         check() {
             this.loading = true;
             this.errors = null;
+
+            this.$store.dispatch('setLastSearch', {
+                from: this.from,
+                to: this.to
+            })
 
             axios.get(`/api/bookables/${this.bookableId}/availability?from=${this.from}&to=${this.to}`)
                 .then(response => {
