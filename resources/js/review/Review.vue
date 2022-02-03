@@ -38,10 +38,13 @@
                             cols="30" 
                             rows="10" 
                             class="form-control"
-                            v-model="review.content"></textarea>
+                            v-model="review.content"
+                            :class="[{'is-invalid': errorFor('content')}]"
+                            ></textarea>
+                         <div class="invalid-feedback" v-for="(error, index) in errorFor('content')" :key="'content' + index">{{ error }}</div>
                     </div>
 
-                    <button class="btn btn-lg btn-primary btn-block" @click.prevent="submit" :disabled="loading">Submit</button>
+                    <button class="btn btn-lg btn-primary btn-block" @click.prevent="submit" :disabled="sending">Submit</button>
                 </div>
             </div>
           </div>
@@ -50,7 +53,7 @@
 </template>
 
 <script>
-import { is404 } from "./../shared/utils/response";
+import { is404, is422} from "./../shared/utils/response";
 
 export default {
     data () {
@@ -64,7 +67,9 @@ export default {
             loading: false,
             existingReview: null,
             booking: null,
-            error: false
+            error: false,
+            errors: null,
+            sending: false
         }
     },
 
@@ -115,12 +120,32 @@ export default {
 
     methods: {
         submit() {
-            this.loading = true
+            this.errors = null;
+            this.sending = true
+
             axios.post(`/api/reviews`, this.review)
             .then(response => console.log(response))
-            .catch(err => (this.error = true))
-            .then(() => this.loading = false)
+            .catch(err => {
+                if (is422(err)) {
+                    const errors = err.response.data.errors;
+
+                    if(errors["content"] && 1 == _.size(errors)) {
+                        this.errors = errors;
+
+                        return;
+                    }
+                }
+                this.error = true
+            })
+            .then(() => this.sending = false)
+        },
+
+        errorFor(field) {
+            return this.errors != null
+             && this.errors[field] 
+             ? this.errors[field]: null;
         }
+
     }
 }
 </script>
