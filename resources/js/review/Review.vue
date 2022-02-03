@@ -1,8 +1,6 @@
 <template>
   <div>
-          <div class="row" v-if="error">
-              Unknown error has occured, please try again later !
-          </div>
+          <fatal-error v-if="error"></fatal-error>
           <div class="row" v-else>
             <div :class="[{'col-md-4': twoColumns}, {'d-none': oneColumn}]">
               <div class="card">
@@ -43,7 +41,7 @@
                             v-model="review.content"></textarea>
                     </div>
 
-                    <button class="btn btn-lg btn-primary btn-block">Submit</button>
+                    <button class="btn btn-lg btn-primary btn-block" @click.prevent="submit" :disabled="loading">Submit</button>
                 </div>
             </div>
           </div>
@@ -71,15 +69,16 @@ export default {
     },
 
     created() {
+        this.review.id = this.$route.params.id;
         this.loading = true;
 
-        axios.get(`/api/reviews/${this.$route.params.id}`)
+        axios.get(`/api/reviews/${this.review.id}`)
         .then(response => {
             this.existingReview = response.data.data
             })
         .catch(err => {
             if (is404(err)) {
-                return axios.get(`/api/booking-by-review/${this.$route.params.id}`)
+                return axios.get(`/api/booking-by-review/${this.review.id}`)
                 .then(response => {
                     this.booking = response.data.data
                 })
@@ -111,6 +110,16 @@ export default {
         },
         twoColumns() {
             return this.loading || !this.alreadyReviewed
+        }
+    },
+
+    methods: {
+        submit() {
+            this.loading = true
+            axios.post(`/api/reviews`, this.review)
+            .then(response => console.log(response))
+            .catch(err => (this.error = true))
+            .then(() => this.loading = false)
         }
     }
 }
