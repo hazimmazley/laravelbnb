@@ -75,28 +75,46 @@ export default {
         }
     },
 
-    created() {
+    async created() {
         this.review.id = this.$route.params.id;
         this.loading = true;
 
-        axios.get(`/api/reviews/${this.review.id}`)
-        .then(response => {
-            this.existingReview = response.data.data
-            })
-        .catch(err => {
-            if (is404(err)) {
-                return axios.get(`/api/booking-by-review/${this.review.id}`)
-                .then(response => {
-                    this.booking = response.data.data
-                })
-                .catch(err => {
-                    this.error = !is404(err)
-                });
-            }   
+        try {
+            this.existingReview = (await axios.get(`/api/reviews/${this.review.id}`)).data.data;
+        } catch(err) {
+            if(is404(err)) {
+                try {
+                    this.booking = (await axios.get(`/api/booking-by-review/${this.review.id}`)).data.data
+                } catch(err) {
+                    this.error = !is404(err);
+                }
 
-            this.error = true
-        })
-        .then(() => (this.loading = false));
+            } else {
+                this.error = true
+            }
+        }
+
+        this.loading = false
+
+        // using promises
+        // axios.get(`/api/reviews/${this.review.id}`)
+        // .then(response => {
+        //     this.existingReview = response.data.data
+        //     })
+        // .catch(err => {
+        //     if (is404(err)) {
+        //         return axios.get(`/api/booking-by-review/${this.review.id}`)
+        //         .then(response => {
+        //             this.booking = response.data.data
+        //         })
+        //         .catch(err => {
+        //             this.error = !is404(err)
+        //         });
+        //     }   
+
+        //     this.error = true
+        // })
+        // .then(() => (this.loading = false));
     },
 
     computed: {
