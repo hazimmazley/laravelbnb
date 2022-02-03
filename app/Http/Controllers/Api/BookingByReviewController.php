@@ -16,7 +16,7 @@ class BookingByReviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke($review, Request $request)
+    public function __invoke($review)
     {
         return new BookingByReviewShowResource(Booking::findByReviewKey($review)) ?? abort(404);
     }
