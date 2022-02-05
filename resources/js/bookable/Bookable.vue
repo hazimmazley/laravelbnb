@@ -28,8 +28,18 @@
                 <button class="btn btn-outline-secondary btn-block" 
                 v-if="price"
                 @click="addToBasket"
+                :disabled="inBasketAlready"
                 >Book Now</button>
             </transition>
+
+            <button class="btn btn-outline-secondary btn-block" 
+                @click="removeFromBasket"
+                v-if="inBasketAlready"
+                >Remove from basket</button>
+
+            <div v-if="inBasketAlready" class="mt-4 text-muted warning">
+                You have added this object already
+            </div>
         </div>
     </div>
 </template>
@@ -56,7 +66,17 @@ export default {
     },
 
     computed: mapState({
-        lastSearch: "lastSearch"
+        lastSearch: "lastSearch",
+        inBasketAlready(state) {
+            if (this.bookable == null) {
+                return false
+            }
+
+            return state.basket.items.reduce(
+                (result, item) => result || item.bookable.id == this.bookable.id, 
+                false
+            );
+        }
     }),
 
     created() {
@@ -91,11 +111,17 @@ export default {
                 price: this.price,
                 dates: this.lastSearch
             })
+        },
+
+        removeFromBasket() {
+            this.$store.commit("removeFromBasket", this.bookable.id)
         }
     }
 }
 </script>
 
-<style>
-
+<style scoped>
+    .warning {
+        font-size: 0.7rem;
+    }
 </style>
