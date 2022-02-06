@@ -5,48 +5,101 @@
               <div class="row">
                   <div class="col-md-6 form-group">
                       <label for="">First Name</label>
-                      <input type="text" v-model="customer.first_name" class="form-control">
+                      <input type="text" 
+                      v-model="customer.first_name" 
+                      class="form-control"
+                    :class="[{'is-invalid': this.errorFor('customer.first_name')}]"
+                      >
+
+                    <v-errors :errors="errorFor('customer.first_name')"></v-errors>
                   </div>
+                  
                   <div class="col-md-6 form-group">
                       <label for="">Last Name</label>
-                      <input type="text" v-model="customer.last_name" class="form-control">
+                      <input type="text" 
+                      v-model="customer.last_name" class="form-control"
+                    :class="[{'is-invalid': this.errorFor('customer.last_name')}]">
+
+                    <v-errors :errors="errorFor('customer.last_name')"></v-errors>
+
                   </div>
               </div>
               <div class="row">
                      <div class="col-md-12 form-group">
                       <label for="">Email</label>
-                      <input type="text"  v-model="customer.email" class="form-control">
+                      <input type="text" 
+                      v-model="customer.email" 
+                      class="form-control"
+                    :class="[{'is-invalid': this.errorFor('customer.email')}]"
+                      >
+
+                    <v-errors :errors="errorFor('customer.email')"></v-errors>
+
                   </div>
               </div>
               <div class="row">
                     <div class="col-md-6 form-group">
                       <label for="">Street</label>
-                      <input type="text" v-model="customer.street" class="form-control">
+                      <input type="text" 
+                      v-model="customer.street" 
+                      class="form-control"
+                    :class="[{'is-invalid': this.errorFor('customer.street')}]"
+                    >
+
+                    <v-errors :errors="errorFor('customer.street')"></v-errors>
                   </div>
 
                      <div class="col-md-6 form-group">
                       <label for="">City</label>
-                      <input type="text" v-model="customer.city" class="form-control">
+                      <input type="text" 
+                      v-model="customer.city"
+                       class="form-control"
+                    :class="[{'is-invalid': this.errorFor('customer.city')}]">
+
+                    <v-errors :errors="errorFor('customer.city')"></v-errors>
+
                   </div>
               </div>
               <div class="row">
                     <div class="col-md-6 form-group">
                       <label for="">Country</label>
-                      <input type="text" v-model="customer.country" class="form-control">
+                      <input type="text" 
+                      v-model="customer.country" 
+                      class="form-control"
+                    :class="[{'is-invalid': this.errorFor('customer.country')}]"
+                      >
+
+                    <v-errors :errors="errorFor('customer.country')"></v-errors>
+
                   </div>
                      <div class="col-md-4 form-group">
                       <label for="">State</label>
-                      <input type="text" v-model="customer.state" class="form-control">
+                      <input type="text" 
+                      v-model="customer.state" 
+                      class="form-control"
+                    :class="[{'is-invalid': this.errorFor('customer.state')}]"
+                      >
+                    <v-errors :errors="errorFor('customer.state')"></v-errors>
                   </div>
                      <div class="col-md-2 form-group">
                       <label for="">Zip</label>
-                      <input type="text" v-model="customer.zip" class="form-control">
+                      <input type="text" 
+                      v-model="customer.zip" 
+                      class="form-control"
+                    :class="[{'is-invalid': this.errorFor('customer.zip')}]"
+                      >
+                    <v-errors :errors="errorFor('customer.zip')"></v-errors>
+
                   </div>
               </div>
               <hr />
               <div class="row">
                   <div class="col-md-12 form-group">
-                      <button type="submit" class="btn btn-lg btn-primary btn-block" @click.prevent="book">Book Now!</button>
+                      <button type="submit"
+                       class="btn btn-lg btn-primary btn-block" 
+                       @click.prevent="book"
+                       :disabled="loading"
+                       >Book Now!</button>
                   </div>
               </div>
 
@@ -130,6 +183,7 @@ export default {
     methods: {
         async book() {
             this.loading = true
+            this.errors = null
 
             try {
                 await axios.post(`/api/checkout`, {
@@ -142,7 +196,8 @@ export default {
                 });
 
                 this.$store.dispatch("clearBasket")
-            } catch (err) {
+            } catch (error) {
+                this.errors = error.response && error.response.data.errors
 
             }
 
