@@ -46,7 +46,7 @@
               <hr />
               <div class="row">
                   <div class="col-md-12 form-group">
-                      <button type="submit" class="btn btn-lg btn-primary btn-block">Book Now!</button>
+                      <button type="submit" class="btn btn-lg btn-primary btn-block" @click.prevent="book">Book Now!</button>
                   </div>
               </div>
 
@@ -94,10 +94,14 @@
 
 <script>
 import { mapGetters, mapState } from "vuex"
+import validationErrors from '../shared/mixins/validationErrors'
 
 export default {
+    mixins: [validationErrors],
+
     data() {
        return {
+           loading: false,
            customer: {
                first_name: null,
                last_name: null,
@@ -115,6 +119,27 @@ export default {
         ...mapState({
             basket: state => state.basket.items
         })
+    },
+
+    methods: {
+        async book() {
+            this.loading = true
+
+            try {
+                await axios.post(`/api/checkout`, {
+                    customer: this.customer,
+                    bookings: this.basket.map(basketItem => ({
+                        bookable_id: basketItem.bookable.id,
+                        from: basketItem.dates.from,
+                        to: basketItem.dates.to
+                    }))
+                });
+            } catch (err) {
+
+            }
+
+            this.loading = false
+        }
     }
 }
 </script>
