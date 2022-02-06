@@ -5,42 +5,42 @@
               <div class="row">
                   <div class="col-md-6 form-group">
                       <label for="">First Name</label>
-                      <input type="text" class="form-control">
+                      <input type="text" v-model="customer.first_name" class="form-control">
                   </div>
                   <div class="col-md-6 form-group">
                       <label for="">Last Name</label>
-                      <input type="text" class="form-control">
+                      <input type="text" v-model="customer.last_name" class="form-control">
                   </div>
               </div>
               <div class="row">
                      <div class="col-md-12 form-group">
                       <label for="">Email</label>
-                      <input type="text" class="form-control">
+                      <input type="text"  v-model="customer.email" class="form-control">
                   </div>
               </div>
               <div class="row">
                     <div class="col-md-6 form-group">
                       <label for="">Street</label>
-                      <input type="text" class="form-control">
+                      <input type="text" v-model="customer.street" class="form-control">
                   </div>
 
                      <div class="col-md-6 form-group">
                       <label for="">City</label>
-                      <input type="text" class="form-control">
+                      <input type="text" v-model="customer.city" class="form-control">
                   </div>
               </div>
               <div class="row">
                     <div class="col-md-6 form-group">
                       <label for="">Country</label>
-                      <input type="text" class="form-control">
+                      <input type="text" v-model="customer.country" class="form-control">
                   </div>
                      <div class="col-md-4 form-group">
                       <label for="">State</label>
-                      <input type="text" class="form-control">
+                      <input type="text" v-model="customer.state" class="form-control">
                   </div>
                      <div class="col-md-2 form-group">
                       <label for="">Zip</label>
-                      <input type="text" class="form-control">
+                      <input type="text" v-model="customer.zip" class="form-control">
                   </div>
               </div>
               <hr />
@@ -96,6 +96,20 @@
 import { mapGetters, mapState } from "vuex"
 
 export default {
+    data() {
+       return {
+           customer: {
+               first_name: null,
+               last_name: null,
+               email: null,
+               street: null,
+               city: null,
+               country: null,
+               state: null,
+               zip: null,
+           }
+       } 
+    },
     computed: {
         ...mapGetters(["itemsInBasket"]),
         ...mapState({
