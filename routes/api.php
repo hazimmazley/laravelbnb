@@ -34,3 +34,6 @@ Route::get('/booking-by-review/{reviewKey}', 'Api\BookingByReviewController')
 
 Route::resource('reviews', 'Api\ReviewController');
 
+Route::post('checkout', 'Api\CheckoutController')
+->name('checkout');
+
