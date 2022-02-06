@@ -1,7 +1,7 @@
 <template>
   <div>
       <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-8" v-if="itemsInBasket">
               <div class="row">
                   <div class="col-md-6 form-group">
                       <label for="">First Name</label>
@@ -50,6 +50,12 @@
                   </div>
               </div>
 
+          </div>
+
+          <div class="col-md-8" v-else>
+              <div class="jumbotron jumbotron-fluid text-center">
+                  <h1>Empty</h1>
+              </div>
           </div>
 
           <div class="col-md-4">
@@ -134,6 +140,8 @@ export default {
                         to: basketItem.dates.to
                     }))
                 });
+
+                this.$store.dispatch("clearBasket")
             } catch (err) {
 
             }
