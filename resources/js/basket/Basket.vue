@@ -1,6 +1,10 @@
 <template>
   <div>
-      <div class="row">
+      <success v-if="success">
+          Congratulations on your purchase
+      </success>
+
+      <div class="row" v-else>
           <div class="col-md-8" v-if="itemsInBasket">
               <div class="row">
                   <div class="col-md-6 form-group">
@@ -13,7 +17,7 @@
 
                     <v-errors :errors="errorFor('customer.first_name')"></v-errors>
                   </div>
-                  
+
                   <div class="col-md-6 form-group">
                       <label for="">Last Name</label>
                       <input type="text" 
@@ -153,14 +157,17 @@
 
 <script>
 import { mapGetters, mapState } from "vuex"
+import Success from '../shared/components/Success.vue'
 import validationErrors from '../shared/mixins/validationErrors'
 
 export default {
+    components: { Success },
     mixins: [validationErrors],
 
     data() {
        return {
            loading: false,
+           bookingAttempted: false,
            customer: {
                first_name: null,
                last_name: null,
@@ -177,13 +184,17 @@ export default {
         ...mapGetters(["itemsInBasket"]),
         ...mapState({
             basket: state => state.basket.items
-        })
+        }),
+        success() {
+            return !this.loading && 0 === this.itemsInBasket && this.bookingAttempted;
+        }
     },
 
     methods: {
         async book() {
             this.loading = true
             this.errors = null
+            this.bookingAttempted = false
 
             try {
                 await axios.post(`/api/checkout`, {
@@ -202,6 +213,7 @@ export default {
             }
 
             this.loading = false
+            this.bookingAttempted = true
         }
     }
 }
